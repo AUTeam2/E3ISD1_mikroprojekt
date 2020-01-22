@@ -6,8 +6,8 @@ def setup():
     GPIO.setup("GPIO0_26", GPIO.OUT) # p1.34 as LED set to output
 
     # p1.20 set to GPIO input and pull up
-    GPIO.setup("PRU0.16", GPIO.IN)
-    GPIO.setup("PRU0.16", GPIO.PUD_UP)
+    GPIO.setup("P1_20", GPIO.IN)
+    GPIO.setup("P1_20", GPIO.PUD_UP)
 
 
 def on_message_callback(client, userdata, message):
