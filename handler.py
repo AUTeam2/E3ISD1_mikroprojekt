@@ -2,6 +2,8 @@ from client import MqttClient
 import Adafruit_BBIO.GPIO as GPIO
 import sys
 
+
+
 def setup():
     GPIO.setup("USR3", GPIO.OUT)
     # p1.34 as LED set to output
@@ -37,10 +39,16 @@ def handler_pub_main():
     #Sends off a single message and quits
     publisher = MqttClient("MessagePublisher", on_message_callback)
     #edge fkt
+    msg_toggle = True
     GPIO.add_event_detect("p1.20",GPIO.FALLING,bouncetime=5)
     while True:
         if GPIO.event_detected("p1.20"):
-            publisher.publish("mikroprojekt/inbound", "Button pressed")
+            if msg_toggle:
+                msg_valg = "OFF"
+            else:
+                msg_valg = "ON"
+        publisher.publish("mikroprojekt/inbound", msg_valg)
+        msg_toggle = not msg_toggle
 
 
 
