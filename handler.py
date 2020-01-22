@@ -25,7 +25,7 @@ def on_message_callback(client, userdata, message):
 
 def handler_sub_main():
     # Define a subscriber that listens to all subjects
-    subscriber = MqttClient("MessageHandler1", on_message_callback)
+    subscriber = MqttClient("MessageHandlerMarc", on_message_callback)
 
     # Only subscribe to relevant inbound messages
     subscriber.subscribe("mikroprojekt/inbound")
@@ -36,8 +36,13 @@ def handler_sub_main():
 def handler_pub_main():
     #Sends off a single message and quits
     publisher = MqttClient("MessagePublisher", on_message_callback)
-    publisher.publish("mikroprojekt/outbound", "OFF")
     #edge fkt
+    GPIO.add_event_detect("p1.20",GPIO.FALLING,bouncetime=5)
+    while True:
+        if GPIO.event_detected("p1.20"):
+            publisher.publish("mikroprojekt/inbound", "Button pressed")
+
+
 
 if __name__ == '__main__':
     setup()
