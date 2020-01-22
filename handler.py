@@ -1,8 +1,7 @@
 from client import MqttClient
 import Adafruit_BBIO.GPIO as GPIO
 import sys
-
-
+import time
 
 def setup():
     GPIO.setup("USR3", GPIO.OUT)
@@ -24,7 +23,6 @@ def on_message_callback(client, userdata, message):
     else:
         print("No action taken!")
 
-
 def handler_sub_main():
     # Define a subscriber that listens to all subjects
     subscriber = MqttClient("MessageHandlerMarc", on_message_callback)
@@ -40,15 +38,19 @@ def handler_pub_main():
     publisher = MqttClient("MessagePublisher", on_message_callback)
     #edge fkt
     msg_toggle = True
-    GPIO.add_event_detect("p1.20",GPIO.FALLING,bouncetime=5)
+    GPIO.add_event_detect("P1_20",GPIO.FALLING)
     while True:
-        if GPIO.event_detected("p1.20"):
+#event_detected
+        if GPIO.event_detected("P1_20"):
             if msg_toggle:
                 msg_valg = "OFF"
             else:
                 msg_valg = "ON"
-        publisher.publish("mikroprojekt/inbound", msg_valg)
-        msg_toggle = not msg_toggle
+            publisher.publish("mikroprojekt/inbound", msg_valg)
+            msg_toggle = not msg_toggle
+            print('HOVSA ingenting\n')
+        time.sleep(5)
+
 
 
 
