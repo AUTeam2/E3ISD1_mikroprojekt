@@ -1,14 +1,13 @@
 from client import MqttClient
 import Adafruit_BBIO.GPIO as GPIO
+import sys
 
 def setup():
     GPIO.setup("USR3", GPIO.OUT)
-    GPIO.setup("GPIO0_26", GPIO.OUT) # p1.34 as LED set to output
-
+    # p1.34 as LED set to output
+    GPIO.setup("GPIO0_26", GPIO.OUT)
     # p1.20 set to GPIO input and pull up
-    GPIO.setup("P1_20", GPIO.IN)
-    GPIO.setup("P1_20", GPIO.PUD_UP)
-
+    GPIO.setup("P1_20", GPIO.IN, GPIO.PUD_UP)
 
 def on_message_callback(client, userdata, message):
     # The received MQTT message is binary and must be decoded
@@ -38,7 +37,13 @@ def handler_pub_main():
     #Sends off a single message and quits
     publisher = MqttClient("MessagePublisher", on_message_callback)
     publisher.publish("mikroprojekt/outbound", "OFF")
+    #edge fkt
 
 if __name__ == '__main__':
     setup()
-    handler_sub_main()
+    if '-s' in sys.argv:
+        handler_sub_main()
+    elif '-p' in sys.argv:
+        handler_pub_main()
+    else:
+        print("Please enter -p or -s!")
