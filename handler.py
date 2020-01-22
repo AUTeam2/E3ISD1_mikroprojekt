@@ -3,6 +3,11 @@ import Adafruit_BBIO.GPIO as GPIO
 
 def setup():
     GPIO.setup("USR3", GPIO.OUT)
+    GPIO.setup("p6_14", GPIO.OUT) # p1.34 as LED set to output
+
+    # p1.20 set to GPIO input and pull up
+    GPIO.setup("p9_41A", GPIO.IN)
+    GPIO.setup("p9_41A", GPIO.PUD_UP)
 
 
 def on_message_callback(client, userdata, message):
@@ -11,8 +16,10 @@ def on_message_callback(client, userdata, message):
     print(msg)
     if msg == "ON":
         GPIO.output("USR3", GPIO.HIGH)
+        GPIO.output("p6_14", GPIO.LOW)
     elif msg == "OFF":
         GPIO.output("USR3", GPIO.LOW)
+        GPIO.output("p6_14", GPIO.HIGH)
     else:
         print("No action taken!")
 
@@ -30,7 +37,7 @@ def handler_sub_main():
 def handler_pub_main():
     #Sends off a single message and quits
     publisher = MqttClient("MessagePublisher", on_message_callback)
-    publisher.publish("mikroprojekt/outbound", "Hello World!")
+    publisher.publish("mikroprojekt/outbound", "OFF")
 
 if __name__ == '__main__':
     setup()
